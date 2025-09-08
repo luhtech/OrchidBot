@@ -1,0 +1,36 @@
+# Core dependencies for OrchidBot
+RPi.GPIO==0.7.1
+spidev==3.6
+smbus2==0.4.3
+
+# Web Framework
+flask==2.3.3
+flask-socketio==5.3.4
+flask-cors==4.0.0
+
+# Data & Monitoring
+pandas==2.0.3
+influxdb-client==1.38.0
+prometheus-client==0.18.0
+
+# AI/ML
+tensorflow-lite==2.13.0
+opencv-python==4.8.1.78
+pillow==10.1.0
+
+# Automation
+schedule==1.2.0
+apscheduler==3.10.4
+paho-mqtt==1.6.1
+
+# APIs
+requests==2.31.0
+python-telegram-bot==20.5
+openweathermap==0.1.2
+
+# Configuration
+pyyaml==6.0.1
+python-dotenv==1.0.0
+
+# Logging
+colorlog==6.7.0

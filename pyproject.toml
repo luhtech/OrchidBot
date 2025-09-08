@@ -1,0 +1,91 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "orchidbot"
+version = "1.0.0"
+description = "Automated Hydroponic Orchid Cultivation System"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "luhtech", email = "info@luhtech.com"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Agriculture",
+    "Topic :: Home Automation",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "RPi.GPIO>=0.7.1",
+    "flask>=2.3.3",
+    "pyyaml>=6.0.1",
+    "requests>=2.31.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.2",
+    "pytest-cov>=4.1.0",
+    "black>=23.9.1",
+    "flake8>=6.1.0",
+    "mypy>=1.6.1",
+]
+rpi = [
+    "picamera2>=0.3.12",
+    "gpiozero>=1.6.2",
+]
+
+[project.urls]
+Homepage = "https://github.com/luhtech/OrchidBot"
+Issues = "https://github.com/luhtech/OrchidBot/issues"
+Documentation = "https://github.com/luhtech/OrchidBot/blob/main/docs/README.md"
+
+[project.scripts]
+orchidbot = "src.core.controller:main"
+
+[tool.black]
+line-length = 88
+target-version = ['py39']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --cov=src --cov-report=term-missing"
+testpaths = [
+    "tests",
+]
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["tests/*", "*/test_*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+]
