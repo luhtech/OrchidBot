@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 class OverflowSensorManager:
     """
     Manager for overflow detection using float switches.
-    
+
     Critical safety component that monitors water levels
     to prevent overflow conditions that could damage
     equipment or plants.
@@ -23,7 +23,7 @@ class OverflowSensorManager:
     def __init__(self, gpio_manager):
         """
         Initialize overflow sensor manager.
-        
+
         Args:
             gpio_manager: GPIO manager instance
         """
@@ -32,21 +32,21 @@ class OverflowSensorManager:
         self.last_readings: Dict[str, bool] = {}
         self.overflow_detected = False
         self.alert_callbacks: List = []
-        
+
         logger.info(f"OverflowSensorManager initialized with pins: {self.sensor_pins}")
 
     def _get_sensor_pins(self) -> List[int]:
         """Get overflow sensor pins from environment."""
         pins_str = os.getenv("OVERFLOW_SENSOR_PINS", "21,22,23,24")
         pins = []
-        
+
         for pin_str in pins_str.split(","):
             try:
                 pin = int(pin_str.strip())
                 pins.append(pin)
             except ValueError:
                 logger.warning(f"Invalid overflow sensor pin: {pin_str}")
-        
+
         return pins
 
     async def initialize(self) -> None:
@@ -55,9 +55,9 @@ class OverflowSensorManager:
             # Setup GPIO pins as inputs with pull-up resistors
             for pin in self.sensor_pins:
                 self.gpio_manager.setup_input_pin(pin, pull_up=True)
-            
+
             logger.info(f"Initialized {len(self.sensor_pins)} overflow sensors")
-            
+
         except Exception as e:
             logger.error(f"Failed to initialize overflow sensors: {e}")
             raise
@@ -65,40 +65,40 @@ class OverflowSensorManager:
     async def read_all(self) -> Dict[str, bool]:
         """
         Read all overflow sensors.
-        
+
         Returns:
             Dict mapping sensor IDs to overflow status (True = overflow detected)
         """
         readings = {}
         overflow_detected = False
-        
+
         for pin in self.sensor_pins:
             try:
                 # Read sensor (float switches are typically active low)
                 sensor_active = not self.gpio_manager.read_pin(pin)
                 sensor_id = f"overflow_{pin}"
                 readings[sensor_id] = sensor_active
-                
+
                 if sensor_active:
                     overflow_detected = True
                     logger.warning(f"OVERFLOW DETECTED on pin {pin}")
-                
+
             except Exception as e:
                 logger.error(f"Error reading overflow sensor pin {pin}: {e}")
                 # Assume overflow for safety
                 readings[f"overflow_{pin}"] = True
                 overflow_detected = True
-        
+
         # Update state
         previous_overflow = self.overflow_detected
         self.overflow_detected = overflow_detected
-        
+
         # Trigger alerts if overflow state changed
         if overflow_detected and not previous_overflow:
             await self._trigger_overflow_alert()
         elif not overflow_detected and previous_overflow:
             await self._trigger_clear_alert()
-        
+
         # Update cache
         self.last_readings.update(readings)
         return readings
@@ -106,7 +106,7 @@ class OverflowSensorManager:
     async def check_overflow(self) -> bool:
         """
         Quick overflow check.
-        
+
         Returns:
             True if any overflow sensor is active
         """
@@ -116,7 +116,7 @@ class OverflowSensorManager:
     async def _trigger_overflow_alert(self) -> None:
         """Trigger overflow alert callbacks."""
         logger.critical("OVERFLOW ALERT: Water level too high!")
-        
+
         for callback in self.alert_callbacks:
             try:
                 if asyncio.iscoroutinefunction(callback):
@@ -129,7 +129,7 @@ class OverflowSensorManager:
     async def _trigger_clear_alert(self) -> None:
         """Trigger overflow cleared alert."""
         logger.info("Overflow condition cleared")
-        
+
         for callback in self.alert_callbacks:
             try:
                 if asyncio.iscoroutinefunction(callback):
@@ -142,7 +142,7 @@ class OverflowSensorManager:
     def add_alert_callback(self, callback) -> None:
         """
         Add callback function for overflow alerts.
-        
+
         Args:
             callback: Function to call on overflow events
         """
@@ -152,7 +152,7 @@ class OverflowSensorManager:
     def remove_alert_callback(self, callback) -> None:
         """
         Remove alert callback.
-        
+
         Args:
             callback: Function to remove
         """
