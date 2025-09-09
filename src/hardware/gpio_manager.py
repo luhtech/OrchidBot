@@ -22,22 +22,26 @@ class MockGPIO:
     PUD_UP = "PUD_UP"
     PUD_DOWN = "PUD_DOWN"
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.pin_states: Dict[int, int] = {}
         self.pin_modes: Dict[int, str] = {}
         self.setup_pins: List[int] = []
 
-    def setmode(self, mode):
+    def setmode(self, mode: str) -> None:
         logger.debug(f"MockGPIO: setmode({mode})")
 
-    def setup(self, pin: int, mode: str, initial: int = None, pull_up_down: str = None):
+    def setwarnings(self, enable: bool) -> None:
+        """Mock implementation of setwarnings method."""
+        logger.debug(f"MockGPIO: setwarnings({enable})")
+
+    def setup(self, pin: int, mode: str, initial: Optional[int] = None, pull_up_down: Optional[str] = None) -> None:
         logger.debug(f"MockGPIO: setup(pin={pin}, mode={mode}, initial={initial})")
         self.setup_pins.append(pin)
         self.pin_modes[pin] = mode
         if initial is not None:
             self.pin_states[pin] = initial
 
-    def output(self, pin: int, state: int):
+    def output(self, pin: int, state: int) -> None:
         logger.debug(f"MockGPIO: output(pin={pin}, state={state})")
         self.pin_states[pin] = state
 
@@ -46,7 +50,7 @@ class MockGPIO:
         logger.debug(f"MockGPIO: input(pin={pin}) -> {state}")
         return state
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         logger.debug("MockGPIO: cleanup()")
         self.pin_states.clear()
         self.pin_modes.clear()

@@ -6,7 +6,10 @@ Critical safety mechanisms to protect plants and equipment
 import logging
 import threading
 import time
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ..hardware.gpio_manager import GPIOManager
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +26,7 @@ class SafetyManager:
     - System health monitoring
     """
 
-    def __init__(self, gpio_manager):
+    def __init__(self, gpio_manager: 'GPIOManager') -> None:
         """
         Initialize safety manager.
 
@@ -146,7 +149,7 @@ class SafetyManager:
 
         return True
 
-    def register_pump_start(self, pin: int, timeout: float = None) -> None:
+    def register_pump_start(self, pin: int, timeout: Optional[float] = None) -> None:
         """
         Register that a pump has started.
 

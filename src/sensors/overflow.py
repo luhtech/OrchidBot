@@ -6,7 +6,10 @@ Critical safety component to prevent water damage
 import asyncio
 import logging
 import os
-from typing import Dict, List
+from typing import Dict, List, Callable, Any, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ..hardware.gpio_manager import GPIOManager
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +23,7 @@ class OverflowSensorManager:
     equipment or plants.
     """
 
-    def __init__(self, gpio_manager):
+    def __init__(self, gpio_manager: 'GPIOManager') -> None:
         """
         Initialize overflow sensor manager.
 
@@ -31,7 +34,7 @@ class OverflowSensorManager:
         self.sensor_pins = self._get_sensor_pins()
         self.last_readings: Dict[str, bool] = {}
         self.overflow_detected = False
-        self.alert_callbacks: List = []
+        self.alert_callbacks: List[Callable[[str], Any]] = []
 
         logger.info(f"OverflowSensorManager initialized with pins: {self.sensor_pins}")
 
@@ -139,7 +142,7 @@ class OverflowSensorManager:
             except Exception as e:
                 logger.error(f"Error in clear alert callback: {e}")
 
-    def add_alert_callback(self, callback) -> None:
+    def add_alert_callback(self, callback: Callable[[str], Any]) -> None:
         """
         Add callback function for overflow alerts.
 
@@ -149,7 +152,7 @@ class OverflowSensorManager:
         self.alert_callbacks.append(callback)
         logger.debug(f"Added overflow alert callback: {callback.__name__}")
 
-    def remove_alert_callback(self, callback) -> None:
+    def remove_alert_callback(self, callback: Callable[[str], Any]) -> None:
         """
         Remove alert callback.
 

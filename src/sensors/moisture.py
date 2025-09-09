@@ -7,7 +7,7 @@ import asyncio
 import logging
 import os
 import time
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Union, Any
 
 logger = logging.getLogger(__name__)
 
@@ -15,10 +15,10 @@ logger = logging.getLogger(__name__)
 class MockI2C:
     """Mock I2C implementation for testing."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.devices: Dict[int, Dict] = {}
 
-    def write_byte(self, address: int, value: int):
+    def write_byte(self, address: int, value: int) -> None:
         if address not in self.devices:
             self.devices[address] = {}
         logger.debug(f"MockI2C: write_byte(0x{address:02x}, 0x{value:02x})")
@@ -62,7 +62,7 @@ class MoistureSensorManager:
             bus_number: I2C bus number (usually 1 on RPi)
         """
         self.bus_number = bus_number
-        self.bus = None
+        self.bus: Union[MockI2C, Any, None] = None  # Can be MockI2C or smbus2.SMBus
         self.sensor_addresses = self._get_sensor_addresses()
         self.calibration_data: Dict[int, Tuple[int, int]] = {}  # (dry_value, wet_value)
         self.last_readings: Dict[str, float] = {}
@@ -122,6 +122,7 @@ class MoistureSensorManager:
                     detected.append(address)
                 else:
                     # Send version command and try to read response
+                    assert self.bus is not None, "I2C bus not initialized"
                     self.bus.write_byte(address, self.CMD_GET_VERSION)
                     await asyncio.sleep(0.1)  # Give sensor time to respond
                     version = self.bus.read_word_data(address, 0)
@@ -179,6 +180,7 @@ class MoistureSensorManager:
 
         try:
             # Read raw capacitance value
+            assert self.bus is not None, "I2C bus not initialized"
             if self.mock_mode:
                 raw_value = self.bus.read_word_data(address, self.CMD_GET_CAPACITANCE)
             else:

@@ -11,7 +11,7 @@ import sys
 import threading
 import time
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Any
 
 import yaml
 from dotenv import load_dotenv
@@ -27,10 +27,10 @@ except ImportError:
     import os
 
     sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
-    from hardware.gpio_manager import GPIOManager
-    from sensors.moisture import MoistureSensorManager
-    from sensors.overflow import OverflowSensorManager
-    from core.safety import SafetyManager
+    from hardware.gpio_manager import GPIOManager  # type: ignore
+    from sensors.moisture import MoistureSensorManager  # type: ignore
+    from sensors.overflow import OverflowSensorManager  # type: ignore
+    from core.safety import SafetyManager  # type: ignore
 
 # Load environment variables
 load_dotenv()
@@ -96,13 +96,13 @@ class HydroponicController:
 
         logger.info("HydroponicController initialized")
 
-    def _load_config(self) -> Dict:
+    def _load_config(self) -> Dict[str, Any]:
         """Load configuration from YAML file."""
         try:
             with open(self.config_path, "r") as f:
                 config = yaml.safe_load(f)
             logger.info(f"Configuration loaded from {self.config_path}")
-            return config
+            return config or {}  # Ensure we return a dict, not None
         except FileNotFoundError:
             logger.warning(f"Config file {self.config_path} not found, using defaults")
             return self._get_default_config()
@@ -110,7 +110,7 @@ class HydroponicController:
             logger.error(f"Error parsing config file: {e}")
             return self._get_default_config()
 
-    def _get_default_config(self) -> Dict:
+    def _get_default_config(self) -> Dict[str, Any]:
         """Return default configuration."""
         return {
             "pumps": {
@@ -263,7 +263,11 @@ class HydroponicController:
             await self._drain_phase()
 
             # Update statistics
-            self.system_stats["cycle_count"] += 1
+            cycle_count = self.system_stats.get("cycle_count", 0)
+            if isinstance(cycle_count, int):
+                self.system_stats["cycle_count"] = cycle_count + 1
+            else:
+                self.system_stats["cycle_count"] = 1
             self.system_stats["last_watering"] = datetime.now()
 
             logger.info("Watering cycle completed successfully")
@@ -397,12 +401,12 @@ class HydroponicController:
 
         logger.info("Controller stopped")
 
-    def _signal_handler(self, signum, frame) -> None:
+    def _signal_handler(self, signum: int, frame: Any) -> None:
         """Handle shutdown signals."""
         logger.info(f"Received signal {signum}, initiating shutdown")
         asyncio.create_task(self.stop())
 
-    def get_status(self) -> Dict:
+    def get_status(self) -> Dict[str, Any]:
         """Get current system status."""
         return {
             "running": self.running,
@@ -411,12 +415,14 @@ class HydroponicController:
             "sensor_readings": self.last_sensor_readings,
             "system_stats": self.system_stats,
             "uptime": (
-                datetime.now() - self.system_stats["start_time"]
+                datetime.now() - 
+                (self.system_stats["start_time"] if isinstance(self.system_stats["start_time"], datetime) 
+                 else datetime.now())
             ).total_seconds(),
         }
 
 
-async def main():
+async def main() -> None:
     """Main entry point for OrchidBot controller."""
     controller = HydroponicController()
 
