@@ -415,9 +415,12 @@ class HydroponicController:
             "sensor_readings": self.last_sensor_readings,
             "system_stats": self.system_stats,
             "uptime": (
-                datetime.now() - 
-                (self.system_stats["start_time"] if isinstance(self.system_stats["start_time"], datetime) 
-                 else datetime.now())
+                datetime.now()
+                - (
+                    self.system_stats["start_time"]
+                    if isinstance(self.system_stats["start_time"], datetime)
+                    else datetime.now()
+                )
             ).total_seconds(),
         }
 

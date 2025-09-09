@@ -26,7 +26,7 @@ class SafetyManager:
     - System health monitoring
     """
 
-    def __init__(self, gpio_manager: 'GPIOManager') -> None:
+    def __init__(self, gpio_manager: "GPIOManager") -> None:
         """
         Initialize safety manager.
 
