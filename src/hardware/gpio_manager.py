@@ -34,7 +34,13 @@ class MockGPIO:
         """Mock implementation of setwarnings method."""
         logger.debug(f"MockGPIO: setwarnings({enable})")
 
-    def setup(self, pin: int, mode: str, initial: Optional[int] = None, pull_up_down: Optional[str] = None) -> None:
+    def setup(
+        self,
+        pin: int,
+        mode: str,
+        initial: Optional[int] = None,
+        pull_up_down: Optional[str] = None,
+    ) -> None:
         logger.debug(f"MockGPIO: setup(pin={pin}, mode={mode}, initial={initial})")
         self.setup_pins.append(pin)
         self.pin_modes[pin] = mode

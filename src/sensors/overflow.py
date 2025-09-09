@@ -23,7 +23,7 @@ class OverflowSensorManager:
     equipment or plants.
     """
 
-    def __init__(self, gpio_manager: 'GPIOManager') -> None:
+    def __init__(self, gpio_manager: "GPIOManager") -> None:
         """
         Initialize overflow sensor manager.
 
