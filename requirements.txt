@@ -14,7 +14,7 @@ influxdb-client==1.38.0
 prometheus-client==0.18.0
 
 # AI/ML
-tensorflow-lite==2.13.0
+tensorflow==2.13.0
 opencv-python==4.8.1.78
 pillow==10.1.0
 
