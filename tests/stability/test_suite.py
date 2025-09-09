@@ -11,9 +11,9 @@ import logging
 import os
 import sys
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
@@ -54,7 +54,7 @@ class StabilityTestSuite:
         os.environ["MOCK_HARDWARE"] = str(mock_mode).lower()
         os.environ["LOG_LEVEL"] = "ERROR"  # Reduce noise during testing
 
-        logger.info(f"🌺 OrchidBot Stability Test Suite Initialized")
+        logger.info("🌺 OrchidBot Stability Test Suite Initialized")
         logger.info(f"   Mock Mode: {mock_mode}")
         logger.info(f"   Test Start: {self.start_time}")
 
@@ -138,7 +138,8 @@ class StabilityTestSuite:
 
         success_rate = passed / len(tests)
         logger.info(
-            f"📊 Extended Tests Complete: {passed}/{len(tests)} passed ({success_rate:.1%})"
+            f"📊 Extended Tests Complete: {passed}/{len(tests)} passed "
+            f"({success_rate:.1%})"
         )
 
         return success_rate >= 0.9  # 90% pass rate required for extended tests
@@ -168,7 +169,7 @@ class StabilityTestSuite:
 
             # Test state operations
             gpio.set_pin(18, False)
-            state = gpio.read_pin(21)
+            gpio.read_pin(21)  # Test read operation
 
             gpio.cleanup()
             return True
@@ -269,7 +270,7 @@ class StabilityTestSuite:
         """Test system recovery from simulated errors."""
         try:
             # Test controller can handle and recover from errors
-            controller = HydroponicController()
+            HydroponicController()  # Test instantiation
 
             # Simulate error conditions and recovery
             await asyncio.sleep(0.1)
@@ -372,7 +373,8 @@ class StabilityTestSuite:
             report["summary"]["success_rate"] = 0.0
 
         # Save report
-        report_file = f"data/test_reports/stability_test_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        report_file = f"data/test_reports/stability_test_{timestamp}.json"
         with open(report_file, "w") as f:
             json.dump(report, f, indent=2)
 

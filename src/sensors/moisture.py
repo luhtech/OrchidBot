@@ -27,7 +27,7 @@ class MockI2C:
         # Simulate moisture reading (0-1023 range)
         import random
 
-        value = random.randint(200, 800)  # Typical moisture range
+        value = random.randint(200, 800)  # Typical moisture range  # nosec B311
         logger.debug(
             f"MockI2C: read_word_data(0x{address:02x}, 0x{register:02x}) -> {value}"
         )
@@ -71,7 +71,8 @@ class MoistureSensorManager:
         self.mock_mode = os.getenv("MOCK_HARDWARE", "false").lower() == "true"
 
         logger.info(
-            f"MoistureSensorManager initialized with addresses: {[hex(addr) for addr in self.sensor_addresses]}"
+            f"MoistureSensorManager initialized with addresses: "
+            f"{[hex(addr) for addr in self.sensor_addresses]}"
         )
 
     def _get_sensor_addresses(self) -> List[int]:
@@ -122,7 +123,8 @@ class MoistureSensorManager:
                     detected.append(address)
                 else:
                     # Send version command and try to read response
-                    assert self.bus is not None, "I2C bus not initialized"
+                    if self.bus is None:
+                        raise RuntimeError("I2C bus not initialized")
                     self.bus.write_byte(address, self.CMD_GET_VERSION)
                     await asyncio.sleep(0.1)  # Give sensor time to respond
                     version = self.bus.read_word_data(address, 0)
@@ -180,7 +182,8 @@ class MoistureSensorManager:
 
         try:
             # Read raw capacitance value
-            assert self.bus is not None, "I2C bus not initialized"
+            if self.bus is None:
+                raise RuntimeError("I2C bus not initialized")
             if self.mock_mode:
                 raw_value = self.bus.read_word_data(address, self.CMD_GET_CAPACITANCE)
             else:
