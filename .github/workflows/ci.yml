@@ -43,10 +43,7 @@ jobs:
         set -e
         echo "Installing Python dependencies..."
         python -m pip install --upgrade pip
-        # Install basic dependencies first
-        echo "Installing core testing tools..."
-        pip install python-dotenv pyyaml pytest pytest-cov pytest-asyncio black flake8 mypy bandit toml
-        # Install development requirements (fail on error)
+        # Install development requirements (includes all needed tools)
         echo "Installing development requirements..."
         pip install -r requirements-dev.txt
 
