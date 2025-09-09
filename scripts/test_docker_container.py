@@ -6,10 +6,14 @@ Tests basic functionality of the OrchidBot controller in Docker container
 
 import sys
 import os
-sys.path.append("/app")
+
+# Add both potential paths for imports
+sys.path.insert(0, "/app")
+sys.path.insert(0, "/app/src")
+sys.path.insert(0, "src")
 
 try:
-    from src.core.controller import HydroponicController
+    from core.controller import HydroponicController
     controller = HydroponicController()
     status = controller.get_status()
     assert "running" in status, "Controller status check failed"
