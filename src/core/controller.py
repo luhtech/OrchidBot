@@ -11,7 +11,7 @@ import sys
 import threading
 import time
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict, Any
 
 import yaml
 from dotenv import load_dotenv
@@ -23,9 +23,6 @@ try:
     from .safety import SafetyManager
 except ImportError:
     # Handle relative imports when running as script
-    import sys
-    import os
-
     sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
     from hardware.gpio_manager import GPIOManager  # type: ignore
     from sensors.moisture import MoistureSensorManager  # type: ignore

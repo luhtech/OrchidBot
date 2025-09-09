@@ -3,23 +3,20 @@ Integration tests for OrchidBot system components
 Tests component interactions and system-level functionality
 """
 
-import asyncio
 import os
+import sys
+from pathlib import Path
+from unittest.mock import Mock
 import pytest
 import pytest_asyncio
-from unittest.mock import Mock, patch
 
 # Ensure mock mode for safety
 os.environ["MOCK_HARDWARE"] = "true"
 
-import sys
-from pathlib import Path
-
+# Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 
-from core.controller import HydroponicController
-from hardware.gpio_manager import GPIOManager
-from core.safety import SafetyManager
+from core.controller import HydroponicController  # noqa: E402
 
 
 class TestSystemIntegration:
