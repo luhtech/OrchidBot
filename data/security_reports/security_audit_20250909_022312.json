@@ -1,0 +1,14 @@
+{
+  "audit_time": "2025-09-09T02:23:12.870791",
+  "total_checks": 6,
+  "passed": 5,
+  "findings": [
+    {
+      "check": "environment_variables",
+      "severity": "WARNING",
+      "finding": "Found 2 potentially sensitive environment variables",
+      "recommendation": "Ensure secrets are properly protected and not logged"
+    }
+  ],
+  "overall_status": "REVIEW_REQUIRED"
+}
