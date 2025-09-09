@@ -37,6 +37,22 @@ The CI workflow now ensures these directories exist before use:
 **Previous Issue**: Tests could fail but not propagate exit codes properly.
 **Solution**: All test scripts now use proper exit codes and `set -e` for immediate failure.
 
+### 5. Code Formatting Failures (RESOLVED)
+**Previous Issue**: Black code style check would fail on non-compliant code.
+**Solution**: Fixed formatting issues in `src/hardware/gpio_manager.py` - mostly trailing whitespace in docstrings.
+
+### 6. CodeQL Action Deprecation (RESOLVED)
+**Previous Issue**: Security scan step used outdated `github/codeql-action@v2`.
+**Solution**: Updated to `github/codeql-action@v3` for continued security scanning support.
+
+### 7. Workflow Permissions (RESOLVED)
+**Previous Issue**: "Resource not accessible by integration" error during artifact upload and security scanning.
+**Solution**: Added explicit workflow permissions for `actions: read`, `contents: read`, and `security-events: write`.
+
+### 8. Missing Dependencies in Documentation Job (RESOLVED)
+**Previous Issue**: `scripts/validate_config.py` failed due to missing `PyYAML` in documentation job.
+**Solution**: Added `pyyaml` to documentation dependencies installation step.
+
 ## Workflow Structure
 
 ### Main Jobs

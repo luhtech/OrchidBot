@@ -113,19 +113,19 @@ class GPIOManager:
     def _validate_pin(self, pin: int) -> None:
         """
         Validate GPIO pin number.
-        
+
         Args:
             pin: GPIO pin number to validate
-            
+
         Raises:
             ValueError: If pin number is invalid
         """
         if not isinstance(pin, int):
             raise ValueError(f"Pin must be an integer, got {type(pin)}")
-        
+
         # Valid GPIO pins for Raspberry Pi (BCM mode)
         valid_pins = list(range(2, 28))  # GPIO 2-27 are generally available
-        
+
         if pin not in valid_pins:
             raise ValueError(f"Invalid GPIO pin {pin}. Valid pins: {valid_pins}")
 
@@ -136,12 +136,12 @@ class GPIOManager:
         Args:
             pin: GPIO pin number (BCM mode)
             initial_state: Initial state (True=HIGH, False=LOW)
-            
+
         Raises:
             ValueError: If pin number is invalid
         """
         self._validate_pin(pin)
-        
+
         with self.lock:
             try:
                 initial = self.gpio.HIGH if initial_state else self.gpio.LOW
@@ -159,12 +159,12 @@ class GPIOManager:
         Args:
             pin: GPIO pin number (BCM mode)
             pull_up: Enable internal pull-up resistor
-            
+
         Raises:
             ValueError: If pin number is invalid
         """
         self._validate_pin(pin)
-        
+
         with self.lock:
             try:
                 pull = self.gpio.PUD_UP if pull_up else self.gpio.PUD_DOWN
@@ -182,12 +182,12 @@ class GPIOManager:
         Args:
             pin: GPIO pin number
             state: True for HIGH, False for LOW
-            
+
         Raises:
             ValueError: If pin number is invalid
         """
         self._validate_pin(pin)
-        
+
         with self.lock:
             try:
                 gpio_state = self.gpio.HIGH if state else self.gpio.LOW
@@ -207,12 +207,12 @@ class GPIOManager:
 
         Returns:
             bool: True if HIGH, False if LOW
-            
+
         Raises:
             ValueError: If pin number is invalid
         """
         self._validate_pin(pin)
-        
+
         with self.lock:
             try:
                 state = self.gpio.input(pin)
