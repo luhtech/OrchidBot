@@ -165,6 +165,10 @@ make test-stability
 - Secure Docker configuration
 - Regular security scanning with Bandit
 
+### GitHub Actions Release Token
+
+The CI workflow requires a fine-grained Personal Access Token (PAT) with `repo` and `workflow` scope stored as `GH_RELEASE_TOKEN` secret for automated releases. This enables the workflow to push tags and create GitHub releases.
+
 ## 🤝 Contributing
 
 1. Fork the repository

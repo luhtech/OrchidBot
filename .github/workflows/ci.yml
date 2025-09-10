@@ -255,6 +255,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     needs: [test, hardware-simulation, docker-build]
+    permissions:
+      contents: write
 
     steps:
     - name: Checkout code
@@ -283,7 +285,8 @@ jobs:
     - name: Create release
       if: steps.version-check.outputs.version_exists == 'false'
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Use fine-grained PAT with repo and workflow scope for push/release permissions
+        GITHUB_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
       run: |
         set -e
         VERSION=${{ steps.version-check.outputs.current_version }}
