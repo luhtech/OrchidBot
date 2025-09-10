@@ -287,6 +287,7 @@ jobs:
       env:
         # Use fine-grained PAT with repo and workflow scope for push/release permissions
         GITHUB_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
+        GH_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
       run: |
         set -e
         VERSION=${{ steps.version-check.outputs.current_version }}
@@ -303,7 +304,9 @@ jobs:
         echo "Automated release from main branch." >> release-notes.md
         echo "" >> release-notes.md
         echo "## Changes" >> release-notes.md
-        git log --oneline $(git describe --tags --abbrev=0 HEAD^)..HEAD >> release-notes.md
+        # Get previous tag, fallback to first commit if no previous tag exists
+        PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || git rev-list --max-parents=0 HEAD)
+        git log --oneline ${PREV_TAG}..HEAD >> release-notes.md
 
         # Create GitHub release
         gh release create "v$VERSION" \
